@@ -1,5 +1,8 @@
 const ForecastResponseSchema = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "properties": {
+        "daily": {},
+        "daily_units": {},
         "elevation": {
             "type": "number"
         },
@@ -22,7 +25,7 @@ const ForecastResponseSchema = {
         },
         "utc_offset_seconds": {
             "type": "number"
-        },
+        }
     },
     "required": [
         "elevation",
@@ -31,7 +34,7 @@ const ForecastResponseSchema = {
         "longitude",
         "timezone",
         "timezone_abbreviation",
-        "utc_offset_seconds",
+        "utc_offset_seconds"
     ],
     "type": "object"
 };

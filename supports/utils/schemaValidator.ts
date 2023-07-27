@@ -1,9 +1,9 @@
 import { expect } from "@jest/globals";
-import Ajv from "ajv";
+import Ajv, { ValidateFunction } from "ajv";
 const ajv = new Ajv();
 
 export default class SchemaValidator {
-  private validator;
+  private validator: ValidateFunction;
 
   constructor(schema: any) {
     this.validator = ajv.compile(schema);

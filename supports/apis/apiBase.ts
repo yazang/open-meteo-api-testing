@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import UrlBuilder from "../utils/urlBuilder";
+import ErrorResponse from "../models/apiResponses/errorResponse";
 
 export default abstract class ApiBase<ResponseType> {
   abstract getBaseUrl(): string;
@@ -9,5 +10,5 @@ export default abstract class ApiBase<ResponseType> {
     this.urlBuilder = new UrlBuilder(this.getBaseUrl());
   }
 
-  abstract query(): Promise<AxiosResponse<ResponseType, any>>
+  abstract query(): Promise<AxiosResponse<ResponseType | ErrorResponse, any>>
 }

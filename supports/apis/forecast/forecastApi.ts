@@ -3,6 +3,8 @@ import City from "../../models/city.type";
 import ApiBase from "../apiBase";
 import ForecastResponse from "../../models/apiResponses/forecastResponse";
 import HourlyVariables from "../../models/hourlyVariables.enum";
+import DailyVariables from "../../models/dailyVariables.enum";
+import ErrorResponse from "../../models/apiResponses/errorResponse";
 
 export default class ForecastApi extends ApiBase<ForecastResponse> {
 
@@ -25,11 +27,16 @@ export default class ForecastApi extends ApiBase<ForecastResponse> {
     return this;
   }
 
-  withDailyVariables() {
-    throw new Error('Not implemented yet.');
+  withDailyVariables(dailyVariables: DailyVariables[]) {
+    /* Join with comma
+     * For example, hourlyVariables = ['weathercode', 'temperature_2m_max', 'temperature_2m_min']
+     * After joined, add query parameter: daily=weathercode,temperature_2m_max,temperature_2m_min
+     */
+    this.urlBuilder.setParameter('daily', dailyVariables.join());
+    return this;
   }
 
   async query() {
-    return axios.get<ForecastResponse>(this.urlBuilder.build());
+    return axios.get<ForecastResponse | ErrorResponse>(this.urlBuilder.build());
   }
 }
