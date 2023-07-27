@@ -1,10 +1,16 @@
+import { Service } from "typedi";
 import ErrorResponse from "../../models/apiResponses/errorResponse";
 import SearchResponse from "../../models/apiResponses/searchResponse";
 import Country from "../../models/countries.enum";
 import SearchApi from "./searchApi";
 
+@Service({ transient: true })
 export default class SearchApiDriver {
-  private readonly searchApi: SearchApi;
+
+  // Opening bug in TypeDI prevent property injection with Jest
+  // https://github.com/typestack/typedi/issues/1084
+  // @Inject()
+  searchApi: SearchApi;
 
   constructor() {
     this.searchApi = new SearchApi();
