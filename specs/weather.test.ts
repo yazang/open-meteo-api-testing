@@ -1,11 +1,11 @@
 import {describe, expect, test} from '@jest/globals';
-import ForecastApi from '../supports/apis/forecast/forecastApi';
 import HourlyVariables from '../supports/models/hourlyVariables.enum';
 import SearchApiDriver from '../supports/apis/search/searchApiDriver';
 import ForecastApiDriver from '../supports/apis/forecast/forecastApiDriver';
 import DailyVariables from '../supports/models/dailyVariables.enum';
 import ForecastResponse from '../supports/models/apiResponses/forecastResponse';
 import ErrorResponse from '../supports/models/apiResponses/errorResponse';
+import Container from 'typedi';
 
 describe('query city weather', () => {
   // Data driven test cases
@@ -15,14 +15,12 @@ describe('query city weather', () => {
     ['Wellington', []],
   ])('can successfully get hourly weather from %s with variables %o', async (cityName, hourlyVariables) => {
     // Arrange
-    //TODO: use DI container to manage instances, to be refactored
-    const searchApiDriver = new SearchApiDriver();
-    const forecastApi = new ForecastApi();
-    const forecastApiDriver = new ForecastApiDriver();
+    const searchApiDriver = Container.get(SearchApiDriver);
+    const forecastApiDriver = Container.get(ForecastApiDriver);
     const city = await searchApiDriver.getCityCoordinates(cityName);
 
     // Act
-    const request = forecastApi.withCity(city);
+    const request = forecastApiDriver.forecastApi.withCity(city);
     if (hourlyVariables && hourlyVariables.length > 0) {
       request.withHourlyVariables(hourlyVariables)
     }
@@ -48,13 +46,12 @@ describe('query city weather', () => {
     ['Auckland', [DailyVariables.Weathercode], 'auto'],
   ])('can successfully get daily weather from %s with variables %o and timezone %s', async (cityName, dailyVariables, timezone) => {
     // Arrange
-    const searchApiDriver = new SearchApiDriver();
-    const forecastApi = new ForecastApi();
-    const forecastApiDriver = new ForecastApiDriver();
+    const searchApiDriver = Container.get(SearchApiDriver);
+    const forecastApiDriver = Container.get(ForecastApiDriver);
     const city = await searchApiDriver.getCityCoordinates(cityName);
 
     // Act
-    const request = forecastApi.withCity(city);
+    const request = forecastApiDriver.forecastApi.withCity(city);
     if (dailyVariables && dailyVariables.length > 0) {
       request.withDailyVariables(dailyVariables)
     }
@@ -78,10 +75,8 @@ describe('query city weather', () => {
 
   test('get daily weather should return error without passing mandatory timezone parameter', async () => {
     // Arrange
-    //TODO: use DI container to manage instances, to be refactored
-    const searchApiDriver = new SearchApiDriver();
-    const forecastApi = new ForecastApi();
-    const forecastApiDriver = new ForecastApiDriver();
+    const searchApiDriver = Container.get(SearchApiDriver);
+    const forecastApiDriver = Container.get(ForecastApiDriver);
     const city = await searchApiDriver.getCityCoordinates('Auckland');
     const dailyVariables = [DailyVariables.Weathercode, DailyVariables.Sunrise];
 
@@ -93,7 +88,7 @@ describe('query city weather', () => {
      */
     let resp;
     try {
-      await forecastApi
+      await forecastApiDriver.forecastApi
         .withCity(city)
         .withDailyVariables(dailyVariables)
         .query();
@@ -114,15 +109,13 @@ describe('query city weather', () => {
 
   test('should return error without passing coordinations', async () => {
     // Arrange
-    //TODO: use DI container to manage instances, to be refactored
-    const forecastApiDriver = new ForecastApiDriver();
-    const forecastApi = new ForecastApi();
+    const forecastApiDriver = Container.get(ForecastApiDriver);
     const hourlyVariables = [HourlyVariables.Temperature_2m, HourlyVariables.RelativeHumidity_2m];
 
     // Act
     let resp;
     try {
-      await forecastApi
+      await forecastApiDriver.forecastApi
         .withHourlyVariables(hourlyVariables)
         .query();
     } catch (error) {

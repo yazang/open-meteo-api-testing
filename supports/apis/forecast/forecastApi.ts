@@ -1,11 +1,11 @@
-import axios from "axios";
 import City from "../../models/city.type";
 import ApiBase from "../apiBase";
 import ForecastResponse from "../../models/apiResponses/forecastResponse";
 import HourlyVariables from "../../models/hourlyVariables.enum";
 import DailyVariables from "../../models/dailyVariables.enum";
-import ErrorResponse from "../../models/apiResponses/errorResponse";
+import { Service } from "typedi";
 
+@Service({ transient: true })
 export default class ForecastApi extends ApiBase<ForecastResponse> {
 
   getBaseUrl(): string {

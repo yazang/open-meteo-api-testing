@@ -1,13 +1,19 @@
 import { expect } from "@jest/globals";
 import ForecastResponse from "../../models/apiResponses/forecastResponse";
 import HourlyVariables from "../../models/hourlyVariables.enum";
-import ForecastApi from "./forecastApi";
 import ForecastResponseSchema from "../../models/apiResponses/forecastResponseSchema";
 import DriverBase from "../driverBase";
 import DailyVariables from "../../models/dailyVariables.enum";
+import { Inject, Service } from "typedi";
+import ForecastApi from "./forecastApi";
 
+@Service({ transient: true })
 export default class ForecastApiDriver extends DriverBase<ForecastResponse> {
-  private readonly forecastApi: ForecastApi;
+
+  // Opening bug in TypeDI prevent property injection with Jest
+  // https://github.com/typestack/typedi/issues/1084
+  // @Inject()
+  forecastApi: ForecastApi
 
   constructor() {
     super(ForecastResponseSchema);

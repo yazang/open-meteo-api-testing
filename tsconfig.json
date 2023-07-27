@@ -4,6 +4,8 @@
     "strictNullChecks": true,
     "types": [
       "node"
-    ]
+    ],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
 }
