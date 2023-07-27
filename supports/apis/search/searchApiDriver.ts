@@ -8,8 +8,8 @@ export default class SearchApiDriver {
     this.searchApi = new SearchApi();
   }
 
-  //TODO: cache search city result
   // By default, search New Zealand cities.
+  //TODO: cache search city result
   async getCityCoordinates(cityName: string, countryCode = Country.NewZealand) {
     const apiResponse = await this.searchApi.withCityName(cityName).query();
     const responseBody = apiResponse.data;
