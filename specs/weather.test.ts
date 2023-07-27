@@ -31,6 +31,7 @@ describe('query city weather', () => {
     // Assert
     // Validate api response status code
     expect(resp.status).toEqual(200);
+    expect(resp.headers['content-type']).toContain('application/json');
     // Query successfully, parse response body as ForecastResponse
     const respBody = resp.data as ForecastResponse;
     // Validate api response body against predefined json schema
@@ -64,7 +65,6 @@ describe('query city weather', () => {
         .withDailyVariables(dailyVariables)
         .query();
     } catch (error) {
-      console.log('From daily test' + error.response.data.reason);
       resp = error.response;
     }
 
@@ -93,8 +93,6 @@ describe('query city weather', () => {
         .withHourlyVariables(hourlyVariables)
         .query();
     } catch (error) {
-      console.log(error.request.path);
-      console.log('From hourly test' + error.response.data.reason);
       resp = error.response;
     }
 
