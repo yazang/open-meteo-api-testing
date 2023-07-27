@@ -40,8 +40,4 @@ export default class ForecastApi extends ApiBase<ForecastResponse> {
     this.urlBuilder.setParameter('timezone', timezone);
     return this;
   }
-
-  async query() {
-    return axios.get<ForecastResponse | ErrorResponse>(this.urlBuilder.build());
-  }
 }
