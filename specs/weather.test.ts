@@ -43,6 +43,39 @@ describe('query city weather', () => {
     }
   });
 
+  test.each([
+    ['Auckland', [DailyVariables.Weathercode, DailyVariables.Sunrise], 'GMT'],
+    ['Auckland', [DailyVariables.Weathercode], 'auto'],
+  ])('can successfully get daily weather from %s with variables %o and timezone %s', async (cityName, dailyVariables, timezone) => {
+    // Arrange
+    const searchApiDriver = new SearchApiDriver();
+    const forecastApi = new ForecastApi();
+    const forecastApiDriver = new ForecastApiDriver();
+    const city = await searchApiDriver.getCityCoordinates(cityName);
+
+    // Act
+    const request = forecastApi.withCity(city);
+    if (dailyVariables && dailyVariables.length > 0) {
+      request.withDailyVariables(dailyVariables)
+    }
+    request.withTimezone(timezone);
+    const resp = await request.query();
+
+    // Assert
+    // Validate api response status code
+    expect(resp.status).toEqual(200);
+    expect(resp.headers['content-type']).toContain('application/json');
+    // Query successfully, parse response body as ForecastResponse
+    const respBody = resp.data as ForecastResponse;
+    // Validate api response body against predefined json schema
+    forecastApiDriver.validateSuccessResponse(respBody);
+
+    // Validate hourly weather data
+    if (dailyVariables && dailyVariables.length > 0) {
+      forecastApiDriver.validateDailyData(respBody, dailyVariables);
+    }
+  })
+
   test('get daily weather should return error without passing mandatory timezone parameter', async () => {
     // Arrange
     //TODO: use DI container to manage instances, to be refactored

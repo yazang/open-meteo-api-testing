@@ -4,6 +4,7 @@ import HourlyVariables from "../../models/hourlyVariables.enum";
 import ForecastApi from "./forecastApi";
 import ForecastResponseSchema from "../../models/apiResponses/forecastResponseSchema";
 import DriverBase from "../driverBase";
+import DailyVariables from "../../models/dailyVariables.enum";
 
 export default class ForecastApiDriver extends DriverBase<ForecastResponse> {
   private readonly forecastApi: ForecastApi;
@@ -20,6 +21,16 @@ export default class ForecastApiDriver extends DriverBase<ForecastResponse> {
       expect(respBody).toHaveProperty(['hourly', hourlyVariable]);
       expect(respBody).toHaveProperty(['hourly_units', hourlyVariable]);
       expect(respBody.hourly.time.length).toEqual(respBody.hourly[hourlyVariable].length);
+    });
+  }
+
+  async validateDailyData(respBody: ForecastResponse, dailyVariables: DailyVariables[]) {
+    expect(respBody).toHaveProperty(['daily', 'time']);
+    expect(respBody).toHaveProperty(['daily_units', 'time']);
+    dailyVariables.forEach(dailyVariable => {
+      expect(respBody).toHaveProperty(['daily', dailyVariable]);
+      expect(respBody).toHaveProperty(['daily_units', dailyVariable]);
+      expect(respBody.daily.time.length).toEqual(respBody.daily[dailyVariable].length);
     });
   }
 }
